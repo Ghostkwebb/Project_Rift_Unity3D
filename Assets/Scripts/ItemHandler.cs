@@ -20,11 +20,13 @@ public class ItemHandler : MonoBehaviour
     {
         if (playerMove.controls.Player.Interact.WasPressedThisFrame())
         {
+            if (playerMove.anim != null) playerMove.anim.SetTrigger("Interact"); // Play animation
             if (heldItem == null) TryGrab(); else DropItem();
         }
 
         if (playerMove.controls.Player.Throw.WasPressedThisFrame())
         {
+            if (playerMove.anim != null) playerMove.anim.SetTrigger("Throw"); // Play animation
             if (heldItem != null) ThrowItem();
         }
     }

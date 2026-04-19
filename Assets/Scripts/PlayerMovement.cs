@@ -9,8 +9,8 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce = 5f;
     public float mouseSensitivity = 0.2f;
     public Transform playerCamera;
+    public Animator anim; // ASSIGN POLY PIZZA MODEL HERE
 
-    // Make public so others can read
     public PlayerInputActions controls { get; private set; }
 
     private Rigidbody rb;
@@ -59,6 +59,15 @@ public class PlayerMovement : MonoBehaviour
         transform.Rotate(Vector3.up * mouseX);
 
         isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f);
+
+        if (anim != null)
+        {
+            float speedScale = isSprinting ? 1f : 0.5f;
+
+            anim.SetFloat("VelX", moveInput.x * speedScale, 0.1f, Time.deltaTime);
+            anim.SetFloat("VelZ", moveInput.y * speedScale, 0.1f, Time.deltaTime);
+        }
+
     }
 
     void FixedUpdate()

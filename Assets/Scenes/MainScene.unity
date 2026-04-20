@@ -810,7 +810,8 @@ MonoBehaviour:
   realGeo: {fileID: 1321014856}
   riftGeo: {fileID: 1325168856}
   sinkDistance: 5
-  realObstacles: []
+  realObstacles:
+  - {fileID: 1486273472}
   riftObstacles: []
   playerMove: {fileID: 763244731}
   levelAudio: {fileID: 763244730}

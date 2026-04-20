@@ -809,7 +809,9 @@ MonoBehaviour:
   riftVolume: {fileID: 1388781122}
   realGeo: {fileID: 1321014856}
   riftGeo: {fileID: 1325168856}
-  testObstacle: {fileID: 1486273472}
+  sinkDistance: 5
+  realObstacles: []
+  riftObstacles: []
   playerMove: {fileID: 763244731}
   levelAudio: {fileID: 763244730}
   cameraTransform: {fileID: 330585546}
@@ -1681,15 +1683,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2470529085381542805, guid: a9c55b2fac05ba248a24bd117da7b964, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2470529085381542805, guid: a9c55b2fac05ba248a24bd117da7b964, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2470529085381542805, guid: a9c55b2fac05ba248a24bd117da7b964, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2470529085381542805, guid: a9c55b2fac05ba248a24bd117da7b964, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

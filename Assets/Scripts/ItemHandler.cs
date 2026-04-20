@@ -5,6 +5,7 @@ public class ItemHandler : MonoBehaviour
 {
     public PlayerMovement playerMove;
     public Transform holdPosition;
+    public Transform torchHoldPosition;
     public Camera mainCamera;
     public Collider playerCollider;
     public float throwForce = 15f;
@@ -20,32 +21,30 @@ public class ItemHandler : MonoBehaviour
     {
         if (playerMove.controls.Player.Interact.WasPressedThisFrame())
         {
-            if (playerMove.anim != null) playerMove.anim.SetTrigger("Interact"); // Play animation
             if (heldItem == null) TryGrab(); else DropItem();
         }
 
         if (playerMove.controls.Player.Throw.WasPressedThisFrame())
         {
-            if (playerMove.anim != null) playerMove.anim.SetTrigger("Throw"); // Play animation
             if (heldItem != null) ThrowItem();
         }
     }
 
     void FixedUpdate()
     {
-        // Move via physics, not Transform. Stop at walls.
         if (heldItem != null && heldRb != null)
         {
-            Vector3 moveDir = holdPosition.position - heldItem.transform.position;
+            Transform targetHold = heldItem.GetComponent<TorchItem>() != null ? torchHoldPosition : holdPosition;
+
+            Vector3 moveDir = targetHold.position - heldItem.transform.position;
             heldRb.linearVelocity = moveDir * holdSpeed;
-            heldRb.MoveRotation(Quaternion.Slerp(heldItem.transform.rotation, holdPosition.rotation, Time.fixedDeltaTime * 10f));
+            heldRb.MoveRotation(Quaternion.Slerp(heldItem.transform.rotation, targetHold.rotation, Time.fixedDeltaTime * 10f));
         }
     }
 
     void TryGrab()
     {
         if (mainCamera == null) mainCamera = Camera.main;
-
         Ray ray = new Ray(mainCamera.transform.position, mainCamera.transform.forward);
         int layerMask = ~(1 << 2);
 
@@ -59,9 +58,8 @@ public class ItemHandler : MonoBehaviour
 
                 if (playerCollider != null) Physics.IgnoreCollision(heldCol, playerCollider, true);
 
-                // Physics hold setup
                 heldRb.useGravity = false;
-                heldRb.linearDamping = 10f; // Stop shake
+                heldRb.linearDamping = 10f;
                 heldRb.angularDamping = 10f;
             }
         }
@@ -72,7 +70,6 @@ public class ItemHandler : MonoBehaviour
 
     void ReleaseItem(bool isThrow)
     {
-        // Reset physics
         heldRb.useGravity = true;
         heldRb.linearDamping = 0f;
         heldRb.angularDamping = 0.05f;

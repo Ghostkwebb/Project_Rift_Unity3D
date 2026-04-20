@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     public float mouseSensitivity = 0.2f;
     public Transform playerCamera;
     public Animator anim;
+    public float footstepSoundRadius = 15f;
 
     public PlayerInputActions controls { get; private set; }
 
@@ -85,7 +86,6 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Calculate speed based on state
         float speedMod = 1f;
         if (isCrouching) speedMod = crouchMultiplier;
         else if (isSprinting) speedMod = sprintMultiplier;
@@ -97,6 +97,11 @@ public class PlayerMovement : MonoBehaviour
 
         targetVelocity.y = rb.linearVelocity.y;
         rb.linearVelocity = targetVelocity;
+
+        if (isSprinting && isGrounded && targetVelocity.magnitude > 1f)
+        {
+            NoiseSystem.MakeNoise(transform.position, footstepSoundRadius);
+        }
     }
 
     void Jump()

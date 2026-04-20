@@ -3,13 +3,17 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Speed Settings")]
     public float baseSpeed = 5f;
     public float sprintMultiplier = 1.5f;
+    public float crouchMultiplier = 0.5f;
     public float swapSpeedMultiplier = 1f;
+
+    [Header("Movement")]
     public float jumpForce = 5f;
     public float mouseSensitivity = 0.2f;
     public Transform playerCamera;
-    public Animator anim; // ASSIGN POLY PIZZA MODEL HERE
+    public Animator anim;
 
     public PlayerInputActions controls { get; private set; }
 
@@ -19,7 +23,11 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 lookInput;
 
     private bool isSprinting;
+    private bool isCrouching;
     private bool isGrounded;
+
+    private Vector3 originalCamPos;
+    public float crouchCameraBump = 0.5f;
 
     void Awake()
     {
@@ -39,14 +47,17 @@ public class PlayerMovement : MonoBehaviour
         controls.Player.Jump.performed += ctx => Jump();
     }
 
-    void OnEnable() => controls.Enable();
-    void OnDisable() => controls.Disable();
-
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
+        originalCamPos = playerCamera.localPosition;
+
+        if (anim != null) anim.SetFloat("CrouchTime", 0.4f);
     }
+
+    void OnEnable() => controls.Enable();
+    void OnDisable() => controls.Disable();
 
     void Update()
     {
@@ -62,31 +73,52 @@ public class PlayerMovement : MonoBehaviour
 
         if (anim != null)
         {
-            float speedScale = isSprinting ? 1f : 0.5f;
+            float speedScale = 0.5f; // Walk base
+            if (isSprinting && !isCrouching) speedScale = 1f; // Sprint
+            if (isCrouching) speedScale = 0.25f; // Slow anim if crouching
 
             anim.SetFloat("VelX", moveInput.x * speedScale, 0.1f, Time.deltaTime);
             anim.SetFloat("VelZ", moveInput.y * speedScale, 0.1f, Time.deltaTime);
+            anim.SetBool("IsGrounded", isGrounded);
         }
-
     }
 
     void FixedUpdate()
     {
-        float currentSpeed = baseSpeed * swapSpeedMultiplier * (isSprinting ? sprintMultiplier : 1f);
-        Vector3 moveDir = (transform.right * moveInput.x + transform.forward * moveInput.y).normalized;
+        // Calculate speed based on state
+        float speedMod = 1f;
+        if (isCrouching) speedMod = crouchMultiplier;
+        else if (isSprinting) speedMod = sprintMultiplier;
 
+        float currentSpeed = baseSpeed * swapSpeedMultiplier * speedMod;
+
+        Vector3 moveDir = (transform.right * moveInput.x + transform.forward * moveInput.y).normalized;
         Vector3 targetVelocity = moveDir * currentSpeed;
+
         targetVelocity.y = rb.linearVelocity.y;
         rb.linearVelocity = targetVelocity;
     }
 
     void Jump()
     {
-        if (isGrounded) rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
+        if (isGrounded && !isCrouching)
+        {
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
+            if (anim != null) anim.SetTrigger("Jump");
+        }
     }
 
-    void ToggleCrouch(bool isCrouching)
+    void ToggleCrouch(bool crouchState)
     {
-        transform.localScale = isCrouching ? new Vector3(1, 0.5f, 1) : new Vector3(1, 1f, 1);
+        isCrouching = crouchState;
+
+        transform.localScale = isCrouching ? new Vector3(1, 0.5f, 1) : Vector3.one;
+
+        Vector3 newCamPos = originalCamPos;
+        if (isCrouching) newCamPos.y += crouchCameraBump;
+
+        playerCamera.localPosition = newCamPos;
+
+        if (anim != null) anim.SetBool("IsCrouching", isCrouching);
     }
 }

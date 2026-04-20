@@ -42,8 +42,9 @@ public class ItemHandler : MonoBehaviour
             Transform targetHold = heldItem.GetComponent<TorchItem>() != null ? torchHoldPosition : holdPosition;
 
             Vector3 moveDir = targetHold.position - heldItem.transform.position;
-            heldRb.linearVelocity = moveDir * holdSpeed;
-            heldRb.MoveRotation(Quaternion.Slerp(heldItem.transform.rotation, targetHold.rotation, Time.fixedDeltaTime * 10f));
+            heldRb.linearVelocity = moveDir * 50f;
+
+            heldRb.MoveRotation(Quaternion.Slerp(heldItem.transform.rotation, targetHold.rotation, Time.fixedDeltaTime * 25f));
         }
     }
 
@@ -66,6 +67,8 @@ public class ItemHandler : MonoBehaviour
                 heldRb.useGravity = false;
                 heldRb.linearDamping = 10f;
                 heldRb.angularDamping = 10f;
+
+                heldRb.interpolation = RigidbodyInterpolation.Interpolate;
             }
         }
     }
@@ -78,6 +81,8 @@ public class ItemHandler : MonoBehaviour
         heldRb.useGravity = true;
         heldRb.linearDamping = 0f;
         heldRb.angularDamping = 0.05f;
+
+        heldRb.interpolation = RigidbodyInterpolation.None;
 
         if (isThrow) heldRb.AddForce(mainCamera.transform.forward * throwForce, ForceMode.Impulse);
 

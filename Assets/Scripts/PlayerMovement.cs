@@ -98,9 +98,10 @@ public class PlayerMovement : MonoBehaviour
         targetVelocity.y = rb.linearVelocity.y;
         rb.linearVelocity = targetVelocity;
 
-        if (isSprinting && isGrounded && targetVelocity.magnitude > 1f)
+        if (!isCrouching && isGrounded && targetVelocity.magnitude > 0.5f)
         {
-            NoiseSystem.MakeNoise(transform.position, footstepSoundRadius);
+            float currentNoiseRadius = isSprinting ? 15f : 7f;
+            NoiseSystem.MakeNoise(transform.position, currentNoiseRadius);
         }
     }
 

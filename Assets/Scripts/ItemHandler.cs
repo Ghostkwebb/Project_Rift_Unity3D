@@ -90,4 +90,10 @@ public class ItemHandler : MonoBehaviour
         heldRb = null;
         heldCol = null;
     }
+
+    public TorchItem GetHeldTorch()
+    {
+        if (heldItem == null) return null;
+        return heldItem.GetComponent<TorchItem>();
+    }
 }

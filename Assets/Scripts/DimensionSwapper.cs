@@ -4,6 +4,8 @@ using UnityEngine.Rendering;
 
 public class DimensionSwapper : MonoBehaviour
 {
+    public static System.Action<bool> OnDimensionSwap; // true = Rift, false = Real
+    public static bool isRiftGlobal = false;
     public Volume realVolume;
     public Volume riftVolume;
     public GameObject realGeo;
@@ -99,6 +101,9 @@ public class DimensionSwapper : MonoBehaviour
 
         inRift = !inRift;
         isSwapping = false;
+
+        isRiftGlobal = inRift;
+        OnDimensionSwap?.Invoke(inRift);
     }
 
     void MoveObstacles(Transform[] obstacles, Vector3[] startPositions, bool isSinking, float t)

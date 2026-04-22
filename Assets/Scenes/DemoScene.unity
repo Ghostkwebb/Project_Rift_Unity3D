@@ -837,7 +837,7 @@ PrefabInstance:
       addedObject: {fileID: 37305945}
     - targetCorrespondingSourceObject: {fileID: 3530487434920885555, guid: 98ba86548ddcd664e9df1d008a5c8f97, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 37305944}
+      addedObject: {fileID: 37305946}
     - targetCorrespondingSourceObject: {fileID: 4777504214439148958, guid: 98ba86548ddcd664e9df1d008a5c8f97, type: 3}
       insertIndex: -1
       addedObject: {fileID: 37305939}
@@ -908,20 +908,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 2
---- !u!114 &37305944
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 37305938}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b4f9be790d584de3b68450d0360a508, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ItemCollisionNoise
-  noiseRadius: 20
-  clackSound: {fileID: 8300000, guid: be57e462d305742d78f494421663dbfe, type: 3}
 --- !u!114 &37305945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -936,6 +922,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TorchItem
   torchLight: {fileID: 1180879230}
   isOn: 1
+--- !u!114 &37305946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37305938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e79afffef22b453f89d62a6d8ee4aa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThrowableItem
+  weightClass: 0
+  dustParticle: {fileID: 8053961318975783259, guid: f8ddf2b9228974c878ace828724db3c5, type: 3}
+  hitSound: {fileID: 8300000, guid: be57e462d305742d78f494421663dbfe, type: 3}
 --- !u!1001 &37641086
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8300,10 +8301,8 @@ MonoBehaviour:
   torchHoldPosition: {fileID: 926257141}
   mainCamera: {fileID: 330585545}
   playerCollider: {fileID: 763244728}
-  throwForce: 15
   grabDistance: 3
   grabRadius: 0.5
-  holdSpeed: 15
 --- !u!1001 &333063904
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9834,20 +9833,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3629098907630726840, guid: afc3fedc78427f04097996d062288c66, type: 3}
   m_PrefabInstance: {fileID: 1151771611}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &381934975
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 381934973}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b4f9be790d584de3b68450d0360a508, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ItemCollisionNoise
-  noiseRadius: 20
-  clackSound: {fileID: 8300000, guid: be57e462d305742d78f494421663dbfe, type: 3}
 --- !u!54 &381934976
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -9875,6 +9860,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &381934977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381934973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e79afffef22b453f89d62a6d8ee4aa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThrowableItem
+  weightClass: 0
+  dustParticle: {fileID: 8053961318975783259, guid: f8ddf2b9228974c878ace828724db3c5, type: 3}
+  hitSound: {fileID: 8300000, guid: be57e462d305742d78f494421663dbfe, type: 3}
 --- !u!1001 &386266909
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14793,8 +14793,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b4f9be790d584de3b68450d0360a508, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemCollisionNoise
-  noiseRadius: 20
-  clackSound: {fileID: 8300000, guid: be57e462d305742d78f494421663dbfe, type: 3}
 --- !u!1001 &602854444
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18506,6 +18504,7 @@ MonoBehaviour:
   playerCamera: {fileID: 330585546}
   anim: {fileID: 774877674}
   footstepSoundRadius: 15
+  itemSpeedMultiplier: 1
   crouchCameraBump: 0.5
 --- !u!114 &763244732
 MonoBehaviour:
@@ -29280,7 +29279,7 @@ PrefabInstance:
       addedObject: {fileID: 381934976}
     - targetCorrespondingSourceObject: {fileID: 3629098907630432920, guid: afc3fedc78427f04097996d062288c66, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 381934975}
+      addedObject: {fileID: 381934977}
   m_SourcePrefab: {fileID: 100100000, guid: afc3fedc78427f04097996d062288c66, type: 3}
 --- !u!4 &1154641876 stripped
 Transform:
@@ -30430,8 +30429,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b4f9be790d584de3b68450d0360a508, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemCollisionNoise
-  noiseRadius: 20
-  clackSound: {fileID: 8300000, guid: be57e462d305742d78f494421663dbfe, type: 3}
 --- !u!114 &1190048828
 MonoBehaviour:
   m_ObjectHideFlags: 0

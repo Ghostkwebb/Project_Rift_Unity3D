@@ -8,14 +8,12 @@ public class ItemHandler : MonoBehaviour
     public Transform torchHoldPosition;
     public Camera mainCamera;
     public Collider playerCollider;
-    public float throwForce = 15f;
     public float grabDistance = 3f;
     public float grabRadius = 0.5f;
-    public float holdSpeed = 15f;
 
     private GameObject heldItem;
     private Rigidbody heldRb;
-    private Collider heldCol;
+    private ThrowableItem heldThrowable; // NEW
 
     void Update()
     {
@@ -43,7 +41,6 @@ public class ItemHandler : MonoBehaviour
 
             Vector3 moveDir = targetHold.position - heldItem.transform.position;
             heldRb.linearVelocity = moveDir * 50f;
-
             heldRb.MoveRotation(Quaternion.Slerp(heldItem.transform.rotation, targetHold.rotation, Time.fixedDeltaTime * 25f));
         }
     }
@@ -60,15 +57,17 @@ public class ItemHandler : MonoBehaviour
             {
                 heldItem = hit.collider.gameObject;
                 heldRb = heldItem.GetComponent<Rigidbody>();
-                heldCol = heldItem.GetComponent<Collider>();
+                heldThrowable = heldItem.GetComponent<ThrowableItem>();
 
-                if (playerCollider != null) Physics.IgnoreCollision(heldCol, playerCollider, true);
+                if (playerCollider != null) Physics.IgnoreCollision(heldItem.GetComponent<Collider>(), playerCollider, true);
 
                 heldRb.useGravity = false;
                 heldRb.linearDamping = 10f;
                 heldRb.angularDamping = 10f;
-
                 heldRb.interpolation = RigidbodyInterpolation.Interpolate;
+
+                // Apply movement penalty if heavy
+                if (heldThrowable != null) playerMove.itemSpeedMultiplier = heldThrowable.speedMod;
             }
         }
     }
@@ -81,14 +80,22 @@ public class ItemHandler : MonoBehaviour
         heldRb.useGravity = true;
         heldRb.linearDamping = 0f;
         heldRb.angularDamping = 0.05f;
-
         heldRb.interpolation = RigidbodyInterpolation.None;
 
-        if (isThrow) heldRb.AddForce(mainCamera.transform.forward * throwForce, ForceMode.Impulse);
+        // Restore player speed
+        playerMove.itemSpeedMultiplier = 1f;
+
+        if (isThrow)
+        {
+            float force = heldThrowable != null ? heldThrowable.throwForce : 15f;
+            if (heldThrowable != null) heldThrowable.SetThrown(); // Mark for destruction
+
+            heldRb.AddForce(mainCamera.transform.forward * force, ForceMode.Impulse);
+        }
 
         heldItem = null;
         heldRb = null;
-        heldCol = null;
+        heldThrowable = null;
     }
 
     public TorchItem GetHeldTorch()

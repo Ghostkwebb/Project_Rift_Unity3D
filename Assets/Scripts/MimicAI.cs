@@ -295,4 +295,33 @@ public class MimicAI : MonoBehaviour
         float baseS = isRift ? riftSpeed : realSpeed;
         agent.speed = (currentState == MimicState.Chase) ? baseS * chaseSpeedMultiplier : baseS;
     }
+
+#if UNITY_EDITOR
+    void OnDrawGizmos()
+    {
+        // 1. Tether Radius (Blue)
+        Gizmos.color = Color.cyan;
+        if (player != null)
+        {
+            Gizmos.DrawWireSphere(player.position, tetherRadius);
+        }
+
+        // 2. Vision Cone (Red, projects from head)
+        Vector3 headPos = transform.position + Vector3.up;
+        Gizmos.color = Color.red;
+
+        // Draw center, left, and right cone boundaries
+        Vector3 leftRay = Quaternion.Euler(0, -visionAngle, 0) * transform.forward;
+        Vector3 rightRay = Quaternion.Euler(0, visionAngle, 0) * transform.forward;
+
+        Gizmos.DrawRay(headPos, transform.forward * visionRange);
+        Gizmos.DrawRay(headPos, leftRay * visionRange);
+        Gizmos.DrawRay(headPos, rightRay * visionRange);
+
+        // Draw line connecting ends to form arc approximation
+        Gizmos.DrawLine(headPos + leftRay * visionRange, headPos + rightRay * visionRange);
+
+        // Note: Mimic "Hearing Radius" determined dynamically by item's noiseRadius overlapping Mimic.
+    }
+#endif
 }

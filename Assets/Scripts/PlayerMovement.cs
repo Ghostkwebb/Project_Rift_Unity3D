@@ -18,6 +18,8 @@ public class PlayerMovement : MonoBehaviour
 
     public PlayerInputActions controls { get; private set; }
 
+    [HideInInspector] public float itemSpeedMultiplier = 1f;
+
     private Rigidbody rb;
     private float xRotation = 0f;
     private Vector2 moveInput;
@@ -90,7 +92,8 @@ public class PlayerMovement : MonoBehaviour
         if (isCrouching) speedMod = crouchMultiplier;
         else if (isSprinting) speedMod = sprintMultiplier;
 
-        float currentSpeed = baseSpeed * swapSpeedMultiplier * speedMod;
+        // Multiply by itemSpeedMultiplier
+        float currentSpeed = baseSpeed * swapSpeedMultiplier * speedMod * itemSpeedMultiplier;
 
         Vector3 moveDir = (transform.right * moveInput.x + transform.forward * moveInput.y).normalized;
         Vector3 targetVelocity = moveDir * currentSpeed;

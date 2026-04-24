@@ -16,6 +16,13 @@ public class PlayerMovement : MonoBehaviour
     public Animator anim;
     public float footstepSoundRadius = 15f;
 
+    [Header("Head Bob")]
+    public float walkBobSpeed = 14f;
+    public float walkBobAmount = 0.05f;
+    public float sprintBobSpeed = 18f;
+    public float sprintBobAmount = 0.1f;
+    private float bobTimer;
+
     public PlayerInputActions controls { get; private set; }
 
     [HideInInspector] public float itemSpeedMultiplier = 1f;
@@ -84,6 +91,31 @@ public class PlayerMovement : MonoBehaviour
             anim.SetFloat("VelZ", moveInput.y * speedScale, 0.1f, Time.deltaTime);
             anim.SetBool("IsGrounded", isGrounded);
         }
+
+        // Head Bob & Smooth Crouch Camera
+        float targetHeight = originalCamPos.y;
+        if (isCrouching) targetHeight += crouchCameraBump;
+
+        float bobOffset = 0f;
+        float flatSpeed = new Vector2(rb.linearVelocity.x, rb.linearVelocity.z).magnitude;
+
+        if (isGrounded && flatSpeed > 0.1f)
+        {
+            float bSpeed = isSprinting ? sprintBobSpeed : walkBobSpeed;
+            float bAmount = isSprinting ? sprintBobAmount : walkBobAmount;
+            if (isCrouching) { bSpeed = 8f; bAmount = 0.02f; }
+
+            bobTimer += Time.deltaTime * bSpeed;
+            bobOffset = Mathf.Sin(bobTimer) * bAmount;
+        }
+        else
+        {
+            bobTimer = 0f; // Reset standing still
+        }
+
+        Vector3 finalCamPos = playerCamera.localPosition;
+        finalCamPos.y = Mathf.Lerp(finalCamPos.y, targetHeight + bobOffset, Time.deltaTime * 15f);
+        playerCamera.localPosition = finalCamPos;
     }
 
     void FixedUpdate()
@@ -120,14 +152,8 @@ public class PlayerMovement : MonoBehaviour
     void ToggleCrouch(bool crouchState)
     {
         isCrouching = crouchState;
-
         transform.localScale = isCrouching ? new Vector3(1, 0.5f, 1) : Vector3.one;
-
-        Vector3 newCamPos = originalCamPos;
-        if (isCrouching) newCamPos.y += crouchCameraBump;
-
-        playerCamera.localPosition = newCamPos;
-
         if (anim != null) anim.SetBool("IsCrouching", isCrouching);
+
     }
 }

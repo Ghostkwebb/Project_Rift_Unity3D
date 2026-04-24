@@ -13059,9 +13059,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3629098907630432920, guid: afc3fedc78427f04097996d062288c66, type: 3}
       insertIndex: -1
       addedObject: {fileID: 599079190}
-    - targetCorrespondingSourceObject: {fileID: 3629098907630432920, guid: afc3fedc78427f04097996d062288c66, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 599079194}
   m_SourcePrefab: {fileID: 100100000, guid: afc3fedc78427f04097996d062288c66, type: 3}
 --- !u!4 &524429506 stripped
 Transform:
@@ -14784,18 +14781,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &599079194
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 599079185}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b4f9be790d584de3b68450d0360a508, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ItemCollisionNoise
 --- !u!1001 &602854444
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22345,9 +22330,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3530487434920885555, guid: 98ba86548ddcd664e9df1d008a5c8f97, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1190048828}
-    - targetCorrespondingSourceObject: {fileID: 3530487434920885555, guid: 98ba86548ddcd664e9df1d008a5c8f97, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1190048827}
     - targetCorrespondingSourceObject: {fileID: 4777504214439148958, guid: 98ba86548ddcd664e9df1d008a5c8f97, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1823683801}
@@ -30420,18 +30402,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3530487434921369875, guid: 98ba86548ddcd664e9df1d008a5c8f97, type: 3}
   m_PrefabInstance: {fileID: 856315136}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1190048827
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1190048825}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b4f9be790d584de3b68450d0360a508, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ItemCollisionNoise
 --- !u!114 &1190048828
 MonoBehaviour:
   m_ObjectHideFlags: 0

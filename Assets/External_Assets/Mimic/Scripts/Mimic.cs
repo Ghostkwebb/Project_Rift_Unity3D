@@ -123,10 +123,18 @@ namespace MimicSpace
                     newLegPosition = transform.position + ((newLegPosition - transform.position) + velocity.normalized * (newLegPosition - transform.position).magnitude) / 2f;
 
                 RaycastHit hit;
-                Physics.Raycast(newLegPosition + Vector3.up * 10f, -Vector3.up, out hit);
-                Vector3 myHit = hit.point;
-                if (Physics.Linecast(transform.position, hit.point, out hit))
+                Vector3 myHit = newLegPosition;
+                myHit.y = transform.position.y;
+                Vector3 bodyOrigin = transform.position + Vector3.up * 1f;
+                Vector3 legTarget = newLegPosition + Vector3.up * 1f;
+                if (Physics.Linecast(bodyOrigin, legTarget, out hit))
+                {
                     myHit = hit.point;
+                }
+                else if (Physics.Raycast(newLegPosition + Vector3.up * 5f, Vector3.down, out hit, 10f))
+                {
+                    myHit = hit.point;
+                }
 
                 float lifeTime = Random.Range(minLegLifetime, maxLegLifetime);
 

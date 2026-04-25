@@ -33,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 lookInput;
 
     private bool isSprinting;
-    private bool isCrouching;
+    [HideInInspector] public bool isCrouching;
     private bool isGrounded;
 
     private Vector3 originalCamPos;

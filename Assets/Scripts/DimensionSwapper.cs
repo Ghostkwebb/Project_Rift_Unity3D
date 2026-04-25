@@ -1,20 +1,25 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class DimensionSwapper : MonoBehaviour
 {
-    public static System.Action<bool> OnDimensionSwap; // true = Rift, false = Real
+    public static System.Action<bool> OnDimensionSwap;
     public static bool isRiftGlobal = false;
     public Volume realVolume;
     public Volume riftVolume;
     public GameObject realGeo;
     public GameObject riftGeo;
 
+    // 2. ADD VIGNETTE VARS
+    private Vignette realVignette;
+    private Vignette riftVignette;
+
     [Header("Obstacles")]
     public float sinkDistance = 5f;
-    public Transform[] realObstacles; // Sink when entering Rift
-    public Transform[] riftObstacles; // Rise when entering Rift
+    public Transform[] realObstacles;
+    public Transform[] riftObstacles;
 
     [Header("References")]
     public PlayerMovement playerMove;
@@ -33,7 +38,6 @@ public class DimensionSwapper : MonoBehaviour
         riftGeo.SetActive(false);
         riftVolume.weight = 0f;
 
-        // Save original positions
         realStartPos = new Vector3[realObstacles.Length];
         for (int i = 0; i < realObstacles.Length; i++)
             realStartPos[i] = realObstacles[i].position;
@@ -42,9 +46,28 @@ public class DimensionSwapper : MonoBehaviour
         for (int i = 0; i < riftObstacles.Length; i++)
         {
             riftStartPos[i] = riftObstacles[i].position;
-            riftObstacles[i].position += Vector3.down * sinkDistance; // Hide underground initially
+            riftObstacles[i].position += Vector3.down * sinkDistance;
+        }
+
+        realVolume.profile.TryGet(out realVignette);
+        riftVolume.profile.TryGet(out riftVignette);
+    }
+
+    void Update()
+    {
+        if (realVignette != null)
+        {
+            float targetReal = playerMove.isCrouching ? 0.56f : 0.46f;
+            realVignette.intensity.value = Mathf.Lerp(realVignette.intensity.value, targetReal, Time.deltaTime * 8f);
+        }
+
+        if (riftVignette != null)
+        {
+            float targetRift = playerMove.isCrouching ? 0.6f : 0.5f;
+            riftVignette.intensity.value = Mathf.Lerp(riftVignette.intensity.value, targetRift, Time.deltaTime * 8f);
         }
     }
+
 
     void TrySwap()
     {

@@ -49,7 +49,7 @@ public class ItemHandler : MonoBehaviour
             Vector3 moveDir = targetHold.position - heldRb.position;
             heldRb.linearVelocity = moveDir * 50f;
 
-            heldRb.MoveRotation(Quaternion.Slerp(heldRb.rotation, targetHold.rotation, Time.fixedDeltaTime * 25f));
+            heldRb.MoveRotation(targetHold.rotation);
         }
     }
 

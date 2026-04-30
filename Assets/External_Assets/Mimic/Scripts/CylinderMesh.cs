@@ -13,6 +13,9 @@ namespace MimicSpace
         MeshFilter myFilter;
         Mesh mesh;
 
+        private List<Vector3> vertices = new List<Vector3>(500);
+        private List<int> triangles = new List<int>(1500);
+
         void Start()
         {
             myLine = GetComponent<LineRenderer>();
@@ -21,18 +24,15 @@ namespace MimicSpace
             myFilter.sharedMesh = mesh;
         }
 
-        IEnumerator WaitIt()
-        {
-            yield return new WaitForSeconds(1f);
-            BuildMesh();
-        }
-
         void BuildMesh()
         {
+            if (myLine.positionCount < 2) return;
+
             mesh.Clear();
+            vertices.Clear();
+            triangles.Clear();
+
             angle = 360f / verticeCount;
-            List<Vector3> vertices = new List<Vector3>();
-            List<int> triangles = new List<int>();
 
             Vector3 circleNormal;
             Vector3 perpendicularVector;
@@ -76,8 +76,8 @@ namespace MimicSpace
                 triangles.Add(vertices.Count - 1);
             }
 
-            mesh.vertices = vertices.ToArray();
-            mesh.triangles = triangles.ToArray();
+            mesh.SetVertices(vertices);
+            mesh.SetTriangles(triangles, 0);
             mesh.RecalculateNormals();
         }
 
@@ -86,5 +86,4 @@ namespace MimicSpace
             BuildMesh();
         }
     }
-
 }

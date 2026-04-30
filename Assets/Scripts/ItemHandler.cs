@@ -13,7 +13,7 @@ public class ItemHandler : MonoBehaviour
 
     private GameObject heldItem;
     private Rigidbody heldRb;
-    private ThrowableItem heldThrowable; // NEW
+    private ThrowableItem heldThrowable;
 
     void Update()
     {
@@ -31,6 +31,13 @@ public class ItemHandler : MonoBehaviour
                 ThrowItem();
             }
         }
+
+        // NEW: Toggle Torch Input
+        if (playerMove.controls.Player.ToggleTorch.WasPressedThisFrame())
+        {
+            TorchItem torch = GetHeldTorch();
+            if (torch != null) torch.TurnOff();
+        }
     }
 
     void FixedUpdate()
@@ -39,9 +46,10 @@ public class ItemHandler : MonoBehaviour
         {
             Transform targetHold = heldItem.GetComponent<TorchItem>() != null ? torchHoldPosition : holdPosition;
 
-            Vector3 moveDir = targetHold.position - heldItem.transform.position;
+            Vector3 moveDir = targetHold.position - heldRb.position;
             heldRb.linearVelocity = moveDir * 50f;
-            heldRb.MoveRotation(Quaternion.Slerp(heldItem.transform.rotation, targetHold.rotation, Time.fixedDeltaTime * 25f));
+
+            heldRb.MoveRotation(Quaternion.Slerp(heldRb.rotation, targetHold.rotation, Time.fixedDeltaTime * 25f));
         }
     }
 
@@ -66,7 +74,6 @@ public class ItemHandler : MonoBehaviour
                 heldRb.angularDamping = 10f;
                 heldRb.interpolation = RigidbodyInterpolation.Interpolate;
 
-                // Apply movement penalty if heavy
                 if (heldThrowable != null) playerMove.itemSpeedMultiplier = heldThrowable.speedMod;
             }
         }
@@ -82,13 +89,12 @@ public class ItemHandler : MonoBehaviour
         heldRb.angularDamping = 0.05f;
         heldRb.interpolation = RigidbodyInterpolation.None;
 
-        // Restore player speed
         playerMove.itemSpeedMultiplier = 1f;
 
         if (isThrow)
         {
             float force = heldThrowable != null ? heldThrowable.throwForce : 15f;
-            if (heldThrowable != null) heldThrowable.SetThrown(); // Mark for destruction
+            if (heldThrowable != null) heldThrowable.SetThrown();
 
             heldRb.AddForce(mainCamera.transform.forward * force, ForceMode.Impulse);
         }

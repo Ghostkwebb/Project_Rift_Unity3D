@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace MimicSpace
@@ -11,40 +9,39 @@ namespace MimicSpace
         public Vector3 footPosition;
         public float maxLegDistance;
         public int legResolution;
-        //public GameObject legObject;
         public LineRenderer legLine;
-        public int handlesCount = 8; // 8 (7 legs + 1 finalfoot)
 
-        public float legMinHeight;
-        public float legMaxHeight;
+        // REMOVED public handlesCount. Math requires exactly 8.
+        public float legMinHeight = 0.5f;
+        public float legMaxHeight = 1.5f;
         float legHeight;
+
         public Vector3[] handles;
-        public float handleOffsetMinRadius;
-        public float handleOffsetMaxRadius;
+        public float handleOffsetMinRadius = 0.1f;
+        public float handleOffsetMaxRadius = 0.5f;
         public Vector3[] handleOffsets;
-        public float finalFootDistance;
+        public float finalFootDistance = 0.2f;
 
         public float growCoef;
         public float growTarget = 1;
-
-        [Range(0, 1f)]
-        public float progression;
+        [Range(0, 1f)] public float progression;
 
         bool isRemoved = false;
         bool canDie = false;
-        public float minDuration;
+        public float minDuration = 1f;
 
         [Header("Rotation")]
         public float rotationSpeed;
-        public float minRotSpeed;
-        public float maxRotSpeed;
+        public float minRotSpeed = 50f;
+        public float maxRotSpeed = 150f;
         float rotationSign = 1;
         public float oscillationSpeed;
-        public float minOscillationSpeed;
-        public float maxOscillationSpeed;
+        public float minOscillationSpeed = 50f;
+        public float maxOscillationSpeed = 100f;
         float oscillationProgress;
 
         public Color myColor;
+
         private float waitToDieTimer = 0f;
         private float waitAndDieTimer = 0f;
         private Vector3[] tempHandles;
@@ -59,14 +56,14 @@ namespace MimicSpace
             this.growCoef = growCoef;
             this.myMimic = myMimic;
 
-            this.legLine = GetComponent<LineRenderer>();
-            handles = new Vector3[handlesCount];
+            if (legLine == null) legLine = GetComponent<LineRenderer>();
 
-            // INIT ARRAYS ONCE
-            tempHandles = new Vector3[handlesCount];
-            linePoints = new Vector3[legResolution + 2];
+            // FORCE EXACT SIZES. NO INSPECTOR CRASHES.
+            if (handles == null || handles.Length != 8) handles = new Vector3[8];
+            if (tempHandles == null || tempHandles.Length != 8) tempHandles = new Vector3[8];
+            if (linePoints == null || linePoints.Length != legResolution + 2) linePoints = new Vector3[legResolution + 2];
+            if (handleOffsets == null || handleOffsets.Length != 6) handleOffsets = new Vector3[6];
 
-            handleOffsets = new Vector3[6];
             handleOffsets[0] = Random.onUnitSphere * Random.Range(handleOffsetMinRadius, handleOffsetMaxRadius);
             handleOffsets[1] = Random.onUnitSphere * Random.Range(handleOffsetMinRadius, handleOffsetMaxRadius);
             handleOffsets[2] = Random.onUnitSphere * Random.Range(handleOffsetMinRadius, handleOffsetMaxRadius);
@@ -99,8 +96,10 @@ namespace MimicSpace
             isRemoved = false;
             canDie = false;
             isDeployed = false;
+
             waitToDieTimer = minDuration;
             waitAndDieTimer = lifeTime;
+
             Sethandles();
         }
 
@@ -143,7 +142,7 @@ namespace MimicSpace
                 if (progression < 0.05f)
                 {
                     legLine.positionCount = 0;
-                    myMimic.RecycleLeg(this.gameObject);
+                    myMimic.RecycleLeg(this);
                     return;
                 }
             }

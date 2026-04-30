@@ -25,7 +25,7 @@ namespace MimicSpace
         public float newLegCooldown = 0.3f;
 
         private float cooldownTimer = 0f;
-        List<GameObject> availableLegPool = new List<GameObject>();
+        List<Leg> availableLegPool = new List<Leg>();
         public Vector3 velocity;
 
         void Start() { ResetMimic(); }
@@ -39,6 +39,19 @@ namespace MimicSpace
             velocity = new Vector3(Random.insideUnitCircle.x, 0, Random.insideUnitCircle.y);
             minimumAnchoredParts = minimumAnchoredLegs * partsPerLeg;
             maxLegDistance = newLegRadius * 2.1f;
+
+            availableLegPool.Clear();
+
+            int massivePoolSize = maxLegs * 3;
+            for (int i = 0; i < massivePoolSize; i++)
+            {
+                GameObject newLegObj = Instantiate(legPrefab, transform.position, Quaternion.identity);
+                newLegObj.transform.SetParent(this.transform);
+                newLegObj.SetActive(false);
+
+                Leg legScript = newLegObj.GetComponent<Leg>();
+                availableLegPool.Add(legScript);
+            }
         }
 
         void Update()
@@ -93,23 +106,28 @@ namespace MimicSpace
 
         void RequestLeg(Vector3 footPosition, int legResolution, float maxLegDistance, float growCoef, Mimic myMimic, float lifeTime)
         {
-            GameObject newLeg;
+            Leg newLeg;
             if (availableLegPool.Count > 0)
             {
                 newLeg = availableLegPool[availableLegPool.Count - 1];
                 availableLegPool.RemoveAt(availableLegPool.Count - 1);
             }
-            else newLeg = Instantiate(legPrefab, transform.position, Quaternion.identity);
+            else
+            {
+                // Fallback (Should never hit this with 3x pool)
+                GameObject obj = Instantiate(legPrefab, transform.position, Quaternion.identity);
+                newLeg = obj.GetComponent<Leg>();
+            }
 
-            newLeg.SetActive(true);
-            newLeg.GetComponent<Leg>().Initialize(footPosition, legResolution, maxLegDistance, growCoef, myMimic, lifeTime);
+            newLeg.gameObject.SetActive(true);
+            newLeg.Initialize(footPosition, legResolution, maxLegDistance, growCoef, myMimic, lifeTime);
             newLeg.transform.SetParent(myMimic.transform);
         }
 
-        public void RecycleLeg(GameObject leg)
+        public void RecycleLeg(Leg leg)
         {
             availableLegPool.Add(leg);
-            leg.SetActive(false);
+            leg.gameObject.SetActive(false);
         }
     }
 }

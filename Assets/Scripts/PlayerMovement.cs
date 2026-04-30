@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce = 5f;
     public float mouseSensitivity = 0.2f;
     public Transform cameraRoot;
+    public Transform yawRoot;
     public Animator anim;
     public float footstepSoundRadius = 15f;
 
@@ -79,9 +80,8 @@ public class PlayerMovement : MonoBehaviour
         yRotation += mouseX;
         xRotation = Mathf.Clamp(xRotation, -90f, 65f);
 
-        cameraRoot.localRotation = Quaternion.Euler(xRotation, yRotation, 0f);
-
-        if (anim != null) anim.transform.localRotation = Quaternion.Euler(0f, yRotation, 0f);
+        if (yawRoot != null) yawRoot.localRotation = Quaternion.Euler(0f, yRotation, 0f);
+        cameraRoot.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
         isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f);
 
@@ -125,11 +125,10 @@ public class PlayerMovement : MonoBehaviour
         if (isCrouching) speedMod = crouchMultiplier;
         else if (isSprinting) speedMod = sprintMultiplier;
 
-        // Multiply by itemSpeedMultiplier
         float currentSpeed = baseSpeed * swapSpeedMultiplier * speedMod * itemSpeedMultiplier;
 
-        Vector3 forward = cameraRoot.forward;
-        Vector3 right = cameraRoot.right;
+        Vector3 forward = yawRoot.forward;
+        Vector3 right = yawRoot.right;
         forward.y = 0f; right.y = 0f;
         forward.Normalize(); right.Normalize();
 

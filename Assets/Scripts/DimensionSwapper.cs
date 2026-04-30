@@ -80,7 +80,7 @@ public class DimensionSwapper : MonoBehaviour
         playerMove.swapSpeedMultiplier = 0.5f;
 
         float timer = 0f;
-        Vector3 camOriginalPos = cameraTransform.localPosition;
+        Vector3 camOriginalPos = Vector3.zero;
 
         if (!inRift) riftGeo.SetActive(true);
         else realGeo.SetActive(true);

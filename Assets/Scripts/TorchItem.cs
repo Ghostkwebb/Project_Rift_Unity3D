@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class TorchItem : MonoBehaviour
 {
@@ -11,15 +10,10 @@ public class TorchItem : MonoBehaviour
         if (torchLight != null) torchLight.enabled = isOn;
     }
 
-    void Update()
+    public void TurnOff()
     {
-        if (isOn && transform.parent != null)
-        {
-            if (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame)
-            {
-                isOn = false;
-                if (torchLight != null) torchLight.enabled = false;
-            }
-        }
+        if (!isOn) return;
+        isOn = false;
+        if (torchLight != null) torchLight.enabled = false;
     }
 }

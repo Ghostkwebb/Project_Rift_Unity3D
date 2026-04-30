@@ -181,6 +181,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleTorch"",
+                    ""type"": ""Button"",
+                    ""id"": ""35a19423-601a-4973-b319-d76ec1614582"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -588,6 +597,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Swap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e134029a-9a46-44fb-814d-142e5702d77f"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleTorch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1185,6 +1205,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Next = m_Player.FindAction("Next", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_Swap = m_Player.FindAction("Swap", throwIfNotFound: true);
+        m_Player_ToggleTorch = m_Player.FindAction("ToggleTorch", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1288,6 +1309,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Next;
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_Swap;
+    private readonly InputAction m_Player_ToggleTorch;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1339,6 +1361,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Swap".
         /// </summary>
         public InputAction @Swap => m_Wrapper.m_Player_Swap;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/ToggleTorch".
+        /// </summary>
+        public InputAction @ToggleTorch => m_Wrapper.m_Player_ToggleTorch;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1395,6 +1421,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Swap.started += instance.OnSwap;
             @Swap.performed += instance.OnSwap;
             @Swap.canceled += instance.OnSwap;
+            @ToggleTorch.started += instance.OnToggleTorch;
+            @ToggleTorch.performed += instance.OnToggleTorch;
+            @ToggleTorch.canceled += instance.OnToggleTorch;
         }
 
         /// <summary>
@@ -1436,6 +1465,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Swap.started -= instance.OnSwap;
             @Swap.performed -= instance.OnSwap;
             @Swap.canceled -= instance.OnSwap;
+            @ToggleTorch.started -= instance.OnToggleTorch;
+            @ToggleTorch.performed -= instance.OnToggleTorch;
+            @ToggleTorch.canceled -= instance.OnToggleTorch;
         }
 
         /// <summary>
@@ -1806,6 +1838,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSwap(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ToggleTorch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnToggleTorch(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

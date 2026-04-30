@@ -12,7 +12,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement")]
     public float jumpForce = 5f;
     public float mouseSensitivity = 0.2f;
-    public Transform playerCamera;
+    public Transform cameraRoot;
+    public Transform yawRoot;
     public Animator anim;
     public float footstepSoundRadius = 15f;
 
@@ -29,6 +30,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody rb;
     private float xRotation = 0f;
+    private float yRotation = 0f;
     private Vector2 moveInput;
     private Vector2 lookInput;
 
@@ -61,7 +63,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
-        originalCamPos = playerCamera.localPosition;
+        originalCamPos = cameraRoot.localPosition;
 
         if (anim != null) anim.SetFloat("CrouchTime", 0.4f);
     }
@@ -75,9 +77,11 @@ public class PlayerMovement : MonoBehaviour
         float mouseY = lookInput.y * mouseSensitivity;
 
         xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-        playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        transform.Rotate(Vector3.up * mouseX);
+        yRotation += mouseX;
+        xRotation = Mathf.Clamp(xRotation, -90f, 65f);
+
+        if (yawRoot != null) yawRoot.localRotation = Quaternion.Euler(0f, yRotation, 0f);
+        cameraRoot.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
         isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f);
 
@@ -92,7 +96,7 @@ public class PlayerMovement : MonoBehaviour
             anim.SetBool("IsGrounded", isGrounded);
         }
 
-        // Head Bob & Smooth Crouch Camera
+        // Head Bob & Smooth Crouch Camera 
         float targetHeight = originalCamPos.y;
         if (isCrouching) targetHeight += crouchCameraBump;
 
@@ -108,14 +112,11 @@ public class PlayerMovement : MonoBehaviour
             bobTimer += Time.deltaTime * bSpeed;
             bobOffset = Mathf.Sin(bobTimer) * bAmount;
         }
-        else
-        {
-            bobTimer = 0f; // Reset standing still
-        }
+        else bobTimer = 0f;
 
-        Vector3 finalCamPos = playerCamera.localPosition;
+        Vector3 finalCamPos = cameraRoot.localPosition;
         finalCamPos.y = Mathf.Lerp(finalCamPos.y, targetHeight + bobOffset, Time.deltaTime * 15f);
-        playerCamera.localPosition = finalCamPos;
+        cameraRoot.localPosition = finalCamPos;
     }
 
     void FixedUpdate()
@@ -124,10 +125,14 @@ public class PlayerMovement : MonoBehaviour
         if (isCrouching) speedMod = crouchMultiplier;
         else if (isSprinting) speedMod = sprintMultiplier;
 
-        // Multiply by itemSpeedMultiplier
         float currentSpeed = baseSpeed * swapSpeedMultiplier * speedMod * itemSpeedMultiplier;
 
-        Vector3 moveDir = (transform.right * moveInput.x + transform.forward * moveInput.y).normalized;
+        Vector3 forward = yawRoot.forward;
+        Vector3 right = yawRoot.right;
+        forward.y = 0f; right.y = 0f;
+        forward.Normalize(); right.Normalize();
+
+        Vector3 moveDir = (right * moveInput.x + forward * moveInput.y).normalized;
         Vector3 targetVelocity = moveDir * currentSpeed;
 
         targetVelocity.y = rb.linearVelocity.y;
